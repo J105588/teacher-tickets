@@ -1,7 +1,7 @@
 // timeslot-main.js
 
 // 必要なモジュールをインポートします
-import GasAPI from './api.js';
+import { getAllTimeslotsForGroup } from './timeslot-schedules.js';
 // シンプルなページにするためサイドバー依存を削除
 
 // --- 初期化処理 (ページの読み込み時に自動で実行されます) ---
@@ -36,7 +36,7 @@ function selectTimeslot(day, timeslot) {
   // 現在のモードをLocalStorageから取得
   const currentMode = localStorage.getItem('currentMode') || 'normal';
   
-  let targetPage = 'seats.html';
+  let targetPage = 'parent_multi.html';
   let additionalParams = '';
 
   // 管理者モードなら、移動先のURLにもadmin=trueパラメータを付与
@@ -62,7 +62,7 @@ async function loadTimeslots(group) {
   timeslotContainer.innerHTML = '<div class="loading">時間帯データを読み込み中...</div>';
 
   try {
-    const timeslots = await GasAPI.getAllTimeslotsForGroup(group); // すべてのリクエストをJSONP経由に統一
+    const timeslots = getAllTimeslotsForGroup(group); // クライアント内スケジュールから取得
 
     if (!timeslots || timeslots.length === 0) {
       timeslotContainer.innerHTML = '<p>時間帯データが見つかりませんでした。</p>';

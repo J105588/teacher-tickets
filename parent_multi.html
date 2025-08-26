@@ -340,11 +340,20 @@
   </div>
   <script type="module">
     import GasAPI from './api.js';
+    import { getTimeslotDisplayName } from './timeslot-schedules.js';
 
     const seatRows = ["A","B","C","D","E"];
     let seatStatusMap = {};
     let selectedSeats = [];
     let applicationDeadline = 0;
+
+    // URL パラメータ
+    const params = new URLSearchParams(window.location.search);
+    const group = params.get('group');
+    const day = params.get('day');
+    const timeslot = params.get('timeslot');
+    const headerLabel = getTimeslotDisplayName(group, day, timeslot);
+    document.querySelector('.title').textContent = `${group} ${headerLabel} 保護者席申込フォーム`;
 
     // ライセンス検証（失敗時はアクセスブロック）
     GasAPI.validateLicense().catch(() => {
@@ -376,8 +385,8 @@
     }
 
     function loadSeats(){
-      GasAPI.getAllSeats()
-        .then(drawSeats)
+      GasAPI.getSeatData(group, day, timeslot, false)
+        .then(data => drawSeats(data && data.seats ? data.seats : []))
         .catch(() => {
           document.getElementById("result").innerText = "座席情報の取得に失敗しました";
         });
@@ -483,7 +492,7 @@
       document.getElementById("result").innerText = "申込しています...";
       document.getElementById("submitBtn").disabled = true;
 
-      GasAPI.submitMultipleSeats(classNo, name, mail, selArr)
+      GasAPI.submitSelectedSeats(group, day, timeslot, classNo, name, mail, selArr)
         .then(msg => {
           document.getElementById("result").innerText = msg;
           selectedSeats=[];
