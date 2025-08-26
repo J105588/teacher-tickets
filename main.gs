@@ -190,7 +190,9 @@ function getSeatData(group, day, timeslot, isAdmin) {
       day: String(day),
       timeslot: String(timeslot),
       time: time,
-      displayName: displayName
+      displayName: displayName,
+      sheetId: sheetId,
+      sheetName: TARGET_SEAT_SHEET_NAME
     }
   };
 }

@@ -49,6 +49,8 @@ class GasAPI {
         const script = document.createElement('script');
         script.src = fullUrl;
         script.async = true;
+        script.dataset.apiName = functionName;
+        script.dataset.apiParams = formData;
         
         let timeoutId = setTimeout(() => {
           console.error('API call timeout:', { functionName, fullUrl });

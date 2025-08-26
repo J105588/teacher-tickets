@@ -394,6 +394,11 @@
       GasAPI.getSeatData(group, day, timeslot, false)
         .then(data => {
           if (!data || !Array.isArray(data.seats)) throw new Error('invalid seats');
+          // 通信内容の可視化
+          showTransportInfo('getSeatData', {
+            request: { group, day, timeslot },
+            responseMeta: data.meta
+          });
           drawSeats(data.seats);
         })
         .catch((e) => {
@@ -521,6 +526,11 @@
 
       GasAPI.submitSelectedSeats(group, day, timeslot, classNo, name, mail, selArr)
         .then(msg => {
+          // 通信内容の可視化
+          showTransportInfo('submitSelectedSeats', {
+            request: { group, day, timeslot, classNo, seatCount: selArr.length },
+            response: { message: msg }
+          });
           document.getElementById("result").innerText = msg;
           selectedSeats=[];
           loadSeats();
@@ -533,6 +543,25 @@
           showGlobalError("申込に失敗しました。時間をおいて再度お試しください。");
         });
     };
+
+    function showTransportInfo(apiName, payload){
+      const boxId = 'transport-log';
+      let box = document.getElementById(boxId);
+      if (!box) {
+        box = document.createElement('pre');
+        box.id = boxId;
+        box.style.background = '#0b2330';
+        box.style.color = '#b7fff0';
+        box.style.padding = '10px';
+        box.style.borderRadius = '8px';
+        box.style.fontSize = '12px';
+        box.style.overflowX = 'auto';
+        box.style.marginTop = '10px';
+        document.querySelector('.card').appendChild(box);
+      }
+      const stamped = { api: apiName, at: new Date().toISOString(), payload };
+      box.textContent = JSON.stringify(stamped, null, 2);
+    }
   </script>
 </body>
 </html>
