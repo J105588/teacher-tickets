@@ -228,8 +228,8 @@ function submitSelectedSeats(group, day, timeslot, classNo, name, mail, selected
     }
   });
 
-  // ログ記録（公演別IDが未設定なら既存ログにフォールバック）
-  var logSheetId = getLogSheetId(String(group), String(day), String(timeslot)) || SHEET_ID_LOG;
+  // ログ記録（公演別IDを SpreadsheetIds.gs から取得。未設定ならエラー）
+  var logSheetId = getLogSheetId(String(group), String(day), String(timeslot));
   var logSheet = SpreadsheetApp.openById(logSheetId).getSheetByName(LOG_SHEET_NAME)
     || SpreadsheetApp.openById(logSheetId).insertSheet(LOG_SHEET_NAME);
   if (logSheet.getLastRow() === 0) {

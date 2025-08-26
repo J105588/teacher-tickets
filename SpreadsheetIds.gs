@@ -39,7 +39,33 @@ const SEAT_SHEET_IDS = {
 
 // ログ用スプレッドシートID (キーを座席シートと合わせる)
 const LOG_SHEET_IDS = {
-  "1-1-A": "YOUR_LOG_ID_HERE", "1-1-B": "YOUR_LOG_ID_HERE", // ... 各公演に対応するID
+    // 1組
+  "1-1-A": "YOUR_SHEET_ID_HERE", "1-1-B": "YOUR_SHEET_ID_HERE", "1-1-C": "YOUR_SHEET_ID_HERE",
+  "1-2-D": "YOUR_SHEET_ID_HERE", "1-2-E": "YOUR_SHEET_ID_HERE", "1-2-F": "YOUR_SHEET_ID_HERE",
+  // 2組
+  "2-1-A": "YOUR_SHEET_ID_HERE", "2-1-B": "YOUR_SHEET_ID_HERE", "2-1-C": "YOUR_SHEET_ID_HERE",
+  "2-2-D": "YOUR_SHEET_ID_HERE", "2-2-E": "YOUR_SHEET_ID_HERE", "2-2-F": "YOUR_SHEET_ID_HERE",
+  // 3組
+  "3-1-A": "YOUR_SHEET_ID_HERE", "3-1-B": "YOUR_SHEET_ID_HERE", "3-1-C": "YOUR_SHEET_ID_HERE",
+  "3-2-D": "YOUR_SHEET_ID_HERE", "3-2-E": "YOUR_SHEET_ID_HERE", "3-2-F": "YOUR_SHEET_ID_HERE",
+  // 4組
+  "4-1-A": "YOUR_SHEET_ID_HERE", "4-1-B": "YOUR_SHEET_ID_HERE", "4-1-C": "YOUR_SHEET_ID_HERE",
+  "4-2-D": "YOUR_SHEET_ID_HERE", "4-2-E": "YOUR_SHEET_ID_HERE", "4-2-F": "YOUR_SHEET_ID_HERE",
+  // 5組
+  "5-1-A": "YOUR_SHEET_ID_HERE", "5-1-B": "YOUR_SHEET_ID_HERE", "5-1-C": "YOUR_SHEET_ID_HERE",
+  "5-2-D": "YOUR_SHEET_ID_HERE", "5-2-E": "YOUR_SHEET_ID_HERE", "5-2-F": "YOUR_SHEET_ID_HERE",
+  // 6組
+  "6-1-A": "YOUR_SHEET_ID_HERE", "6-1-B": "YOUR_SHEET_ID_HERE", "6-1-C": "YOUR_SHEET_ID_HERE",
+  "6-2-D": "YOUR_SHEET_ID_HERE", "6-2-E": "YOUR_SHEET_ID_HERE", "6-2-F": "YOUR_SHEET_ID_HERE",
+  // 7組
+  "7-1-A": "YOUR_SHEET_ID_HERE", "7-1-B": "YOUR_SHEET_ID_HERE", "7-1-C": "YOUR_SHEET_ID_HERE",
+  "7-2-D": "YOUR_SHEET_ID_HERE", "7-2-E": "YOUR_SHEET_ID_HERE", "7-2-F": "YOUR_SHEET_ID_HERE",
+  // 8組
+  "8-1-A": "YOUR_SHEET_ID_HERE", "8-1-B": "YOUR_SHEET_ID_HERE", "8-1-C": "YOUR_SHEET_ID_HERE",
+  "8-2-D": "YOUR_SHEET_ID_HERE", "8-2-E": "YOUR_SHEET_ID_HERE", "8-2-F": "YOUR_SHEET_ID_HERE",
+  // 見本演劇
+  "見本演劇-1-A": "103hWNVu2MlfeP7vCSEAhJmeu18NZDb_vubbRpUBt7TI",
+  "見本演劇-1-B": "16ADG2Aniz6f_rbirpfngeLXh8D2Im2BA8uJotY394oU"
 };
 
 // スプレッドシートIDを取得する関数
@@ -71,11 +97,25 @@ function getSeatSheetId(group, day, timeslot) {
 
 function getLogSheetId(group, day, timeslot) {
   const key = `${group}-${day}-${timeslot}`;
-  const id = LOG_SHEET_IDS[key];
-  
+  let id = LOG_SHEET_IDS[key];
+
+  // デバッグ情報を出力
+  console.log(`getLogSheetId: 検索キー=${key}, 結果=${id || 'なし'}`);
+
+  // IDが見つからない場合、テスト用の「見本演劇」のIDを使用
   if (!id || id === "YOUR_LOG_ID_HERE") {
-    console.log(`ログシートIDが設定されていません: [組: ${group}, 日: ${day}, 時間帯: ${timeslot}]`);
-    return null;
+    if (group === '見本演劇') {
+      const testKey = `見本演劇-${day}-${timeslot}`;
+      id = LOG_SHEET_IDS[testKey];
+      console.log(`ログ用テストキーで再検索: ${testKey}, 結果=${id || 'なし'}`);
+
+      if (id && id !== "YOUR_LOG_ID_HERE") {
+        return id;
+      }
+    }
+
+    // それでもIDが見つからない場合はエラー
+    throw new Error(`ログシートIDが設定されていません: [組: ${group}, 日: ${day}, 時間帯: ${timeslot}]`);
   }
   return id;
 }
