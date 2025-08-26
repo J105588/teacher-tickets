@@ -250,30 +250,34 @@ function doGet(e) {
     try { params = e.parameter.params ? JSON.parse(e.parameter.params) : {}; } catch (_) { params = {}; }
 
     var result;
-    switch (fn) {
-      case 'getTimeslotInfo':
-        result = getTimeslotInfo(params.group, params.day, params.timeslot);
-        break;
-      case 'getAllSeatsForSheet':
-        result = getAllSeatsForSheet(params.sheetId);
-        break;
-      case 'getSeatSheetId':
-        result = getSeatSheetId(params.group, params.day, params.timeslot);
-        break;
-      case 'submitMultipleSeatsForSheet':
-        result = submitMultipleSeatsForSheet(params.sheetId, params.classNo, params.name, params.mail, params.selectedSeatsArr);
-        break;
-      case 'getDeadlineTimestamp':
-        result = getDeadlineTimestamp();
-        break;
-      case 'getAllTimeslotsForGroup':
-        result = getAllTimeslotsForGroup(params.group);
-        break;
-      case 'validateLicense':
-        result = validateLicense();
-        break;
-      default:
-        result = { error: true, message: '未知の関数: ' + fn };
+    try {
+      switch (fn) {
+        case 'getTimeslotInfo':
+          result = getTimeslotInfo(params.group, params.day, params.timeslot);
+          break;
+        case 'getAllSeatsForSheet':
+          result = getAllSeatsForSheet(params.sheetId);
+          break;
+        case 'getSeatSheetId':
+          result = getSeatSheetId(params.group, params.day, params.timeslot);
+          break;
+        case 'submitMultipleSeatsForSheet':
+          result = submitMultipleSeatsForSheet(params.sheetId, params.classNo, params.name, params.mail, params.selectedSeatsArr);
+          break;
+        case 'getDeadlineTimestamp':
+          result = getDeadlineTimestamp();
+          break;
+        case 'getAllTimeslotsForGroup':
+          result = getAllTimeslotsForGroup(params.group);
+          break;
+        case 'validateLicense':
+          result = validateLicense();
+          break;
+        default:
+          result = { error: true, message: '未知の関数: ' + fn };
+      }
+    } catch (err) {
+      result = { error: true, message: err && err.message ? err.message : '処理中にエラーが発生しました' };
     }
     var payload = callback ? (callback + '(' + JSON.stringify(result) + ')') : JSON.stringify(result);
     var out = ContentService.createTextOutput(payload);

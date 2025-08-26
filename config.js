@@ -10,11 +10,11 @@
 const FRONTEND_CONFIG = {
   // 開発環境
   development: {
-    gasApiUrl: 'https://script.google.com/macros/s/AKfycbzxgu5XTYAOEWo6MjL8lLCTUgNsYJ6DXM1G0ES7FGV_aeTeD0joiAv1gNVKsle8UP_IEg/exec'
+    gasApiUrl: 'https://script.google.com/macros/s/AKfycbxppDZlRdwlu-ZKQWuikTDDfePD36epzfoFcTjtjsXKAVV-l379A8U1Mas2PI1kSaGZuQ/exec'
   },
   // GitHub Pages本番環境
   production: {
-    gasApiUrl: 'https://script.google.com/macros/s/AKfycbzxgu5XTYAOEWo6MjL8lLCTUgNsYJ6DXM1G0ES7FGV_aeTeD0joiAv1gNVKsle8UP_IEg/exec'
+    gasApiUrl: 'https://script.google.com/macros/s/AKfycbxppDZlRdwlu-ZKQWuikTDDfePD36epzfoFcTjtjsXKAVV-l379A8U1Mas2PI1kSaGZuQ/exec'
   }
 };
 
