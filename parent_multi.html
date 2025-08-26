@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>保護者席申込フォーム</title>
+  <title>先生用席申込フォーム</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Google Fonts: Noto Sans JP + Montserrat -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
@@ -290,13 +290,12 @@
 <body>
   <div class="container">
     <div class="card" style="margin-top:0;">
-      <div class="title">保護者席申込フォーム</div>
+      <div class="title">先生用席申込フォーム</div>
       <div class="desc">
         ご希望の席を選んでお申し込みください。<br>
         <b>舞台はA列側</b>です。<br>
         既に選択された席は選択できません。<br>
         <h4 id="timeslot-info">このフォームは15:30〜15:50のものです。</h4>
-        <h5><b>※詳細は配布済の手紙をご参照ください</b></h5>
       </div>
       <div class="contact">
         <svg width="17" height="17" viewBox="0 0 20 20" fill="none" style="vertical-align:-3px;">
@@ -307,10 +306,10 @@
       </div>
       <div class="deadline" id="deadlineMsg"></div>
       <form id="parentForm" autocomplete="off">
-        <div class="step-title">ステップ1：生徒情報の入力</div>
+        <div class="step-title">ステップ1：情報の入力</div>
         <div class="form-section">
           <div class="form-group">
-            <label for="classSel">生徒のクラス</label>
+            <label for="classSel">ご担当のクラス</label>
             <select id="classSel" name="class" required>
               <option value="">選択してください</option>
               <option value="1">1組</option>
@@ -321,10 +320,11 @@
               <option value="6">6組</option>
               <option value="7">7組</option>
               <option value="8">8組</option>
+              <option value="8">なし</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="nameInput">生徒のお名前</label>
+            <label for="nameInput">お名前</label>
             <input type="text" id="nameInput" name="name" required placeholder="例: 山田 花子">
           </div>
           <div class="form-group">
