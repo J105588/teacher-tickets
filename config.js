@@ -10,11 +10,11 @@
 const FRONTEND_CONFIG = {
   // 開発環境
   development: {
-    gasApiUrl: 'https://script.google.com/macros/s/AKfycbxTsA1hlgH_VIlztz22-k37lYEL8ChgqCKxhxbcLQPO35rlz-k5AKSZaswa-6TSltXP2g/exec'
+    gasApiUrl: 'https://script.google.com/macros/s/AKfycbzxgu5XTYAOEWo6MjL8lLCTUgNsYJ6DXM1G0ES7FGV_aeTeD0joiAv1gNVKsle8UP_IEg/exec'
   },
   // GitHub Pages本番環境
   production: {
-    gasApiUrl: 'https://script.google.com/macros/s/AKfycbxTsA1hlgH_VIlztz22-k37lYEL8ChgqCKxhxbcLQPO35rlz-k5AKSZaswa-6TSltXP2g/exec'
+    gasApiUrl: 'https://script.google.com/macros/s/AKfycbzxgu5XTYAOEWo6MjL8lLCTUgNsYJ6DXM1G0ES7FGV_aeTeD0joiAv1gNVKsle8UP_IEg/exec'
   }
 };
 
@@ -33,30 +33,31 @@ function getGasApiUrl() {
 }
 
 // GAS API呼び出し用の共通関数
-async function callGasApi(functionName, params = {}) {
-  try {
-    const url = getGasApiUrl();
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        function: functionName,
-        params: params
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+function callGasApi(functionName, params = {}) {
+  return new Promise((resolve, reject) => {
+    try {
+      const base = getGasApiUrl();
+      const callbackName = `__jsonp_cb_${Date.now()}_${Math.floor(Math.random()*100000)}`;
+      const onCleanup = () => {
+        try { delete window[callbackName]; } catch (_) {}
+        if (script && script.parentNode) { script.parentNode.removeChild(script); }
+        if (timeoutId) { clearTimeout(timeoutId); }
+      };
+      window[callbackName] = (data) => { onCleanup(); resolve(data); };
+      const qs = new URLSearchParams();
+      qs.set('function', functionName);
+      qs.set('params', JSON.stringify(params || {}));
+      qs.set('callback', callbackName);
+      const url = `${base}?${qs.toString()}`;
+      const script = document.createElement('script');
+      script.src = url;
+      script.onerror = () => { onCleanup(); reject(new Error('JSONP request failed')); };
+      const timeoutId = setTimeout(() => { onCleanup(); reject(new Error('JSONP timeout')); }, 15000);
+      document.head.appendChild(script);
+    } catch (error) {
+      reject(error);
     }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('GAS API呼び出しエラー:', error);
-    throw error;
-  }
+  });
 }
 
 // 時間帯情報を取得するAPI関数

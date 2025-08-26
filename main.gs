@@ -151,18 +151,28 @@ function validateLicense() {
 // APIエンドポイント - POSTリクエストを処理
 function doPost(e) {
   try {
-    // CORSヘッダーを設定
+    // CORSヘッダー
     const headers = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Content-Type': 'application/json'
+      'Access-Control-Allow-Headers': 'Content-Type'
     };
 
-    // リクエストデータを解析
-    const requestData = JSON.parse(e.postData.contents);
-    const functionName = requestData.function;
-    const params = requestData.params || {};
+    // リクエストデータを解析（JSON or x-www-form-urlencoded）
+    var functionName = '';
+    var params = {};
+    if (e && e.postData && e.postData.type === 'application/json') {
+      const requestData = JSON.parse(e.postData.contents || '{}');
+      functionName = requestData.function || '';
+      params = requestData.params || {};
+    } else if (e && e.parameter) {
+      functionName = e.parameter.function || '';
+      try {
+        params = e.parameter.params ? JSON.parse(e.parameter.params) : {};
+      } catch (err) {
+        params = {};
+      }
+    }
 
     // 関数名に基づいて適切な関数を呼び出し
     let result;
@@ -199,10 +209,10 @@ function doPost(e) {
     }
 
     // レスポンスを返す
-    return ContentService
-      .createTextOutput(JSON.stringify(result))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(headers);
+    var out = ContentService.createTextOutput(JSON.stringify(result));
+    out.setMimeType(ContentService.MimeType.JSON);
+    for (var k in headers) out.setHeader(k, headers[k]);
+    return out;
 
   } catch (error) {
     const errorResponse = {
@@ -210,15 +220,12 @@ function doPost(e) {
       message: error.message
     };
 
-    return ContentService
-      .createTextOutput(JSON.stringify(errorResponse))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders({
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Content-Type': 'application/json'
-      });
+    var errOut = ContentService.createTextOutput(JSON.stringify(errorResponse));
+    errOut.setMimeType(ContentService.MimeType.JSON);
+    errOut.setHeader('Access-Control-Allow-Origin', '*');
+    errOut.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    errOut.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return errOut;
   }
 }
 
@@ -234,14 +241,54 @@ function doOptions(e) {
 }
 
 // Web公開用（従来の形式 - 後方互換性のため）
-function doGet() {
+function doGet(e) {
+  // JSONP エンドポイント: function, params(JSON文字列), callback をクエリで受け取る
+  if (e && (e.parameter && (e.parameter.function || e.parameter.callback))) {
+    var fn = e.parameter.function || '';
+    var callback = e.parameter.callback || '';
+    var params = {};
+    try { params = e.parameter.params ? JSON.parse(e.parameter.params) : {}; } catch (_) { params = {}; }
+
+    var result;
+    switch (fn) {
+      case 'getTimeslotInfo':
+        result = getTimeslotInfo(params.group, params.day, params.timeslot);
+        break;
+      case 'getAllSeatsForSheet':
+        result = getAllSeatsForSheet(params.sheetId);
+        break;
+      case 'getSeatSheetId':
+        result = getSeatSheetId(params.group, params.day, params.timeslot);
+        break;
+      case 'submitMultipleSeatsForSheet':
+        result = submitMultipleSeatsForSheet(params.sheetId, params.classNo, params.name, params.mail, params.selectedSeatsArr);
+        break;
+      case 'getDeadlineTimestamp':
+        result = getDeadlineTimestamp();
+        break;
+      case 'getAllTimeslotsForGroup':
+        result = getAllTimeslotsForGroup(params.group);
+        break;
+      case 'validateLicense':
+        result = validateLicense();
+        break;
+      default:
+        result = { error: true, message: '未知の関数: ' + fn };
+    }
+    var payload = callback ? (callback + '(' + JSON.stringify(result) + ')') : JSON.stringify(result);
+    var out = ContentService.createTextOutput(payload);
+    out.setMimeType(ContentService.MimeType.JAVASCRIPT);
+    out.setHeader('Access-Control-Allow-Origin', '*');
+    return out;
+  }
+
   try {
     return HtmlService
       .createHtmlOutputFromFile("index")
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
       .setTitle('保護者用整理券システム')
       .addMetaTag('viewport', 'width=device-width, initial-scale=1');
-  } catch (e) {
+  } catch (e2) {
     var html = HtmlService.createHtmlOutput(
       '<!DOCTYPE html>' +
       '<html lang="ja">' +
