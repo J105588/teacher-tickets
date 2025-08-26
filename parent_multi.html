@@ -278,12 +278,12 @@
 <body>
   <div class="container">
     <div class="card" style="margin-top:0;">
-      <div class="title">保護者席申込フォーム</div>
+      <div class="title">先生用席申込フォーム</div>
       <div class="desc">
         ご希望の席を選んでお申し込みください。<br>
         <b>舞台はA列側</b>です。<br>
         既に選択された席は選択できません。<br>
-        <h4>このフォームは15:30〜15:50のものです。</h4>
+        <h4 id="timeslot-desc">このフォームは--:--〜--:--のものです。</h4>
         <h5><b>※詳細は配布済の手紙をご参照ください</b></h5>
       </div>
       <div class="contact">
@@ -295,10 +295,10 @@
       </div>
       <div class="deadline" id="deadlineMsg"></div>
       <form id="parentForm" autocomplete="off">
-        <div class="step-title">ステップ1：生徒情報の入力</div>
+        <div class="step-title">ステップ1：情報の入力</div>
         <div class="form-section">
           <div class="form-group">
-            <label for="classSel">生徒のクラス</label>
+            <label for="classSel">ご担当のクラス</label>
             <select id="classSel" name="class" required>
               <option value="">選択してください</option>
               <option value="1">1組</option>
@@ -309,10 +309,11 @@
               <option value="6">6組</option>
               <option value="7">7組</option>
               <option value="8">8組</option>
+              <option value="8">その他</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="nameInput">生徒のお名前</label>
+            <label for="nameInput">お名前</label>
             <input type="text" id="nameInput" name="name" required placeholder="例: 山田 花子">
           </div>
           <div class="form-group">
@@ -340,7 +341,7 @@
   </div>
   <script type="module">
     import GasAPI from './api.js';
-    import { getTimeslotDisplayName } from './timeslot-schedules.js';
+    import { getTimeslotDisplayName, getTimeslotTime } from './timeslot-schedules.js';
 
     const seatRows = ["A","B","C","D","E"];
     let seatStatusMap = {};
@@ -353,7 +354,10 @@
     const day = params.get('day');
     const timeslot = params.get('timeslot');
     const headerLabel = getTimeslotDisplayName(group, day, timeslot);
+    const timeOnly = getTimeslotTime(group, day, timeslot) || '';
     document.querySelector('.title').textContent = `${group} ${headerLabel} 保護者席申込フォーム`;
+    const tsDescEl = document.getElementById('timeslot-desc');
+    if (tsDescEl && timeOnly) tsDescEl.textContent = `このフォームは${timeOnly}のものです。`;
 
     // ライセンス検証（失敗時はアクセスブロック）
     GasAPI.validateLicense().catch(() => {
@@ -371,8 +375,10 @@
           loadSeats();
         }
       })
-      .catch(() => {
+      .catch((e) => {
+        console.error('deadline error', e);
         document.getElementById("deadlineMsg").innerHTML = "締切情報の取得に失敗しました";
+        showGlobalError("締切情報の取得に失敗しました。時間をおいて再度お試しください。");
       });
 
     function showDeadline() {
@@ -386,9 +392,14 @@
 
     function loadSeats(){
       GasAPI.getSeatData(group, day, timeslot, false)
-        .then(data => drawSeats(data && data.seats ? data.seats : []))
-        .catch(() => {
+        .then(data => {
+          if (!data || !Array.isArray(data.seats)) throw new Error('invalid seats');
+          drawSeats(data.seats);
+        })
+        .catch((e) => {
+          console.error('getSeatData error', e);
           document.getElementById("result").innerText = "座席情報の取得に失敗しました";
+          showGlobalError("座席情報の取得に失敗しました。ページを再読み込みしてください。");
         });
     }
 
@@ -444,7 +455,12 @@
         }
         html += '</tr>';
       }
-      document.getElementById("seatTable").innerHTML = html;
+      const table = document.getElementById("seatTable");
+      if (!table) {
+        showGlobalError("画面の初期化に失敗しました");
+        return;
+      }
+      table.innerHTML = html;
       enableSeatSelect();
       document.getElementById("selectedSeats").value = selectedSeats.join(",");
     }
@@ -468,6 +484,17 @@
     function lockForm() {
       document.getElementById("seatTable").innerHTML = "";
       document.getElementById("parentForm").innerHTML = "<h3 style='color:#d62c27;text-align:center'>申込受付は終了しました</h3>";
+    }
+
+    function showGlobalError(message){
+      const container = document.getElementById('error-container');
+      const msg = document.getElementById('error-message');
+      if (container && msg) {
+        msg.textContent = message;
+        container.style.display = 'flex';
+      } else {
+        alert(message);
+      }
     }
 
     document.getElementById("parentForm").onsubmit = function(e){
@@ -499,9 +526,11 @@
           loadSeats();
           document.getElementById("submitBtn").disabled=false;
         })
-        .catch(() => {
+        .catch((e) => {
+          console.error('submit error', e);
           document.getElementById("result").innerText = "申込に失敗しました";
           document.getElementById("submitBtn").disabled=false;
+          showGlobalError("申込に失敗しました。時間をおいて再度お試しください。");
         });
     };
   </script>

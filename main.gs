@@ -5,7 +5,7 @@ const SPREADSHEET_ID_KEY = '17w2V9kudoj_EAYUn-gsOG6PhH-_ComyWT6LTnWMXazg';
 const KEY_SHEET_NAME = 'keys';
 
 // 申込〆切
-const PARENT_APP_DEADLINE = new Date("2025-07-31T13:00:00+09:00"); 
+const PARENT_APP_DEADLINE = new Date("2025-09-15T00:00:00+09:00"); 
 
 // 「ParentApplications」（ログ用）シート初期化関数
 function initializeLogSheet() {
