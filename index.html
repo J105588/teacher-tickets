@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>組選択</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/J105588/video-nazuna/main/images/IMG_5316.png">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/J105588/video-nazuna/main/images/IMG_5316.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="main-content">
+    <header class="page-header">
+      <h1>組選択</h1>
+    </header>
+    <main class="container">
+      <p class="description">管理する組または演劇を選択してください。</p>
+      <div class="grid-container">
+        <a class="grid-item" href="timeslot.html?group=1">1組</a>
+        <a class="grid-item" href="timeslot.html?group=2">2組</a>
+        <a class="grid-item" href="timeslot.html?group=3">3組</a>
+        <a class="grid-item" href="timeslot.html?group=4">4組</a>
+        <a class="grid-item" href="timeslot.html?group=5">5組</a>
+        <a class="grid-item" href="timeslot.html?group=6">6組</a>
+        <a class="grid-item" href="timeslot.html?group=7">7組</a>
+        <a class="grid-item" href="timeslot.html?group=8">8組</a>
+        <a class="grid-item" href="timeslot.html?group=見本演劇">見本演劇</a>
+      </div>
+    </main>
+  </div>
+
+  <div id="error-container" class="error-container" style="display: none;">
+    <div class="error-content">
+      <p id="error-message">エラーが発生しました</p>
+      <div class="error-buttons">
+        <button onclick="history.back()">戻る</button>
+        <button onclick="location.reload()">再読み込み</button>
+      </div>
+    </div>
+  </div>
+
+  
+</body>
+</html>
