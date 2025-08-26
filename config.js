@@ -1,5 +1,5 @@
 // config.js
-const GAS_API_URL = "https://script.google.com/macros/s/AKfycbx3iFBj52jhUoQJ-KjL2pCiFSzrze5Fg4XcvC0HfejF_9EthMp_i8x2vK-LKKcWIxwQ1A/exec";
+const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzVarlmCakMQX82Wnl4jZxjf-Ar4WcjYjh-Bl_GIgRt-zaApym38lOPMccLTESdzssiow/exec";
 // フェイルオーバー用に複数URLを保持可能（先頭から順に試行）
 const GAS_API_URLS = [
   GAS_API_URL,
