@@ -1,0 +1,205 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  background-color: #f0f2f5;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.page-header {
+  background-color: #fff;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+}
+
+.page-header h1 {
+  font-size: 20px;
+  margin: 0;
+  margin-left: 15px;
+}
+
+.menu-btn {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-right: 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.back-btn:hover {
+  background-color: #f8f9fa;
+  color: #0056b3;
+}
+
+.description {
+  color: #666;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.grid-item {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.grid-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.timeslot-section {
+  margin-bottom: 30px;
+}
+
+.timeslot-section h2 {
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.spinner {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+}
+
+.error-container {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.error-content {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  margin: 20px;
+}
+
+.error-content p {
+  color: #d32f2f;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.error-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.error-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.error-buttons button:first-child {
+  background-color: #6c757d;
+  color: white;
+}
+
+.error-buttons button:last-child {
+  background-color: #007bff;
+  color: white;
+}
+
+.error-buttons button:hover {
+  opacity: 0.8;
+}

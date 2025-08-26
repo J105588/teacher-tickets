@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>組選択</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/J105588/video-nazuna/main/images/IMG_5316.png">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/J105588/video-nazuna/main/images/IMG_5316.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="main-content">
+    <header class="page-header">
+      <h1>組選択</h1>
+    </header>
+    <main class="container">
+      <p class="description">管理する組または演劇を選択してください。</p>
+      <div class="grid-container">
+        <div class="grid-item" onclick="selectGroup('1')">1組</div>
+        <div class="grid-item" onclick="selectGroup('2')">2組</div>
+        <div class="grid-item" onclick="selectGroup('3')">3組</div>
+        <div class="grid-item" onclick="selectGroup('4')">4組</div>
+        <div class="grid-item" onclick="selectGroup('5')">5組</div>
+        <div class="grid-item" onclick="selectGroup('6')">6組</div>
+        <div class="grid-item" onclick="selectGroup('7')">7組</div>
+        <div class="grid-item" onclick="selectGroup('8')">8組</div>
+        <div class="grid-item" onclick="selectGroup('見本演劇')">見本演劇</div>
+      </div>
+    </main>
+  </div>
+
+  <div id="error-container" class="error-container" style="display: none;">
+    <div class="error-content">
+      <p id="error-message">エラーが発生しました</p>
+      <div class="error-buttons">
+        <button onclick="history.back()">戻る</button>
+        <button onclick="location.reload()">再読み込み</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selectGroup(group) {
+      // 組選択をセッションストレージに保存
+      sessionStorage.setItem('selectedGroup', group);
+      
+      // 時間帯選択ページに遷移
+      window.location.href = 'timeslot.html';
+    }
+  </script>
+</body>
+</html>

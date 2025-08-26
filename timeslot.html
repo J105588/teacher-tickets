@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>時間帯選択</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/J105588/video-nazuna/main/images/IMG_5316.png">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/J105588/video-nazuna/main/images/IMG_5316.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="main-content">
+    <header class="page-header">
+      <button class="back-btn" onclick="goBack()">← 戻る</button>
+      <h1><span id="group-name"></span> 時間帯選択</h1>
+    </header>
+
+    <main class="container">
+      <div id="timeslot-container">
+        <div class="loading">時間帯データを読み込み中...</div>
+      </div>
+    </main>
+  </div>
+
+  <div id="error-container" class="error-container" style="display: none;">
+    <div class="error-content">
+      <p id="error-message">エラーが発生しました</p>
+      <div class="error-buttons">
+        <button onclick="history.back()">戻る</button>
+        <button onclick="location.reload()">再読み込み</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    let selectedGroup = '';
+    let timeslots = [];
+
+    // ページ読み込み時の処理
+    window.onload = async function() {
+      // セッションストレージから組情報を取得
+      selectedGroup = sessionStorage.getItem('selectedGroup');
+      if (!selectedGroup) {
+        showError('組が選択されていません');
+        return;
+      }
+
+      // 組名を表示
+      document.getElementById('group-name').textContent = selectedGroup;
+      
+      // GAS APIから時間帯情報を取得
+      await loadTimeslots();
+    };
+
+    async function loadTimeslots() {
+      try {
+        // API形式で時間帯情報を取得
+        timeslots = await getAllTimeslotsForGroup(selectedGroup);
+        displayTimeslots();
+      } catch (error) {
+        console.error('時間帯データの取得に失敗しました:', error);
+        // フォールバック: テスト用データ
+        timeslots = [
+          { day: '1', timeslot: 'A', time: '10:00-10:55', displayName: 'A時間帯 (10:00-10:55)' },
+          { day: '1', timeslot: 'B', time: '11:35-12:30', displayName: 'B時間帯 (11:35-12:30)' },
+          { day: '1', timeslot: 'C', time: '13:10-14:05', displayName: 'C時間帯 (13:10-14:05)' }
+        ];
+        displayTimeslots();
+      }
+    }
+
+    function displayTimeslots() {
+      const container = document.getElementById('timeslot-container');
+      
+      if (timeslots.length === 0) {
+        container.innerHTML = '<p class="no-data">利用可能な時間帯がありません</p>';
+        return;
+      }
+
+      let html = '<div class="timeslot-section">';
+      
+      // 日別にグループ化
+      const days = {};
+      timeslots.forEach(ts => {
+        if (!days[ts.day]) days[ts.day] = [];
+        days[ts.day].push(ts);
+      });
+
+      // 各日の時間帯を表示
+      Object.keys(days).sort().forEach(day => {
+        const dayName = day == 1 ? '1日目' : '2日目';
+        html += `<h2>${dayName}</h2>`;
+        html += '<div class="grid-container">';
+        
+        days[day].forEach(ts => {
+          html += `<div class="grid-item" onclick="selectTimeslot('${ts.day}', '${ts.timeslot}', '${ts.time}')">${ts.displayName}</div>`;
+        });
+        
+        html += '</div>';
+      });
+
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    function selectTimeslot(day, timeslot, time) {
+      // 時間帯選択をセッションストレージに保存
+      sessionStorage.setItem('selectedDay', day);
+      sessionStorage.setItem('selectedTimeslot', timeslot);
+      sessionStorage.setItem('selectedTime', time);
+      
+      // 保護者席申込フォームに遷移
+      window.location.href = 'parent_multi.html';
+    }
+
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+
+    function showError(message) {
+      document.getElementById('error-message').textContent = message;
+      document.getElementById('error-container').style.display = 'flex';
+    }
+  </script>
+</body>
+</html>
