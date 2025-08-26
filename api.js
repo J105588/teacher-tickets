@@ -2,6 +2,13 @@
 import { GAS_API_URL, GAS_API_URLS, DEBUG_MODE, debugLog } from './config.js';
 
 class GasAPI {
+  static _ensureSuccess(response, functionName) {
+    if (!response || response.success !== true) {
+      const message = response && response.error ? response.error : `API error: ${functionName}`;
+      throw new Error(message);
+    }
+    return response.data;
+  }
   static _callApi(functionName, params = []) {
     return new Promise((resolve, reject) => {
       try {
@@ -137,73 +144,73 @@ class GasAPI {
 
   static async getAllTimeslotsForGroup(group) {
     const response = await this._callApi('getAllTimeslotsForGroup', [group]);
-    return response.data; // データを返す
+    return this._ensureSuccess(response, 'getAllTimeslotsForGroup');
   }
 
   static async testApi() {
     const response = await this._callApi('testApi');
-    return response.data;
+    return this._ensureSuccess(response, 'testApi');
   }
 
   static async verifyModePassword(mode, password) {
     const response = await this._callApi('verifyModePassword', [mode, password]);
-    return response;
+    return this._ensureSuccess(response, 'verifyModePassword');
   }
 
   static async getSeatData(group, day, timeslot, isAdmin) {
     const response = await this._callApi('getSeatData', [group, day, timeslot, isAdmin]);
-    return response;
+    return this._ensureSuccess(response, 'getSeatData');
   }
 
   static async assignWalkInSeat(group, day, timeslot) {
     const response = await this._callApi('assignWalkInSeat', [group, day, timeslot]);
-    return response;
+    return this._ensureSuccess(response, 'assignWalkInSeat');
   }
 
   static async reserveSeats(group, day, timeslot, selectedSeats) {
     const response = await this._callApi('reserveSeats', [group, day, timeslot, selectedSeats]);
-    return response;
+    return this._ensureSuccess(response, 'reserveSeats');
   }
 
   static async checkInSeat(group, day, timeslot, seatId) {
     const response = await this._callApi('checkInSeat', [group, day, timeslot, seatId]);
-    return response;
+    return this._ensureSuccess(response, 'checkInSeat');
   }
 
   static async checkInMultipleSeats(group, day, timeslot, seatIds) {
     const response = await this._callApi('checkInMultipleSeats', [group, day, timeslot, seatIds]);
-    return response;
+    return this._ensureSuccess(response, 'checkInMultipleSeats');
   }
 
   static async assignWalkInSeats(group, day, timeslot, count) {
     const response = await this._callApi('assignWalkInSeats', [group, day, timeslot, count]);
-    return response;
+    return this._ensureSuccess(response, 'assignWalkInSeats');
   }
 
   // ===== Parent form endpoints (JSONP) =====
   static async getDeadlineTimestamp() {
     const response = await this._callApi('getDeadlineTimestamp');
-    return response.data;
+    return this._ensureSuccess(response, 'getDeadlineTimestamp');
   }
 
   static async getAllSeats() {
     const response = await this._callApi('getAllSeats');
-    return response.data;
+    return this._ensureSuccess(response, 'getAllSeats');
   }
 
   static async submitMultipleSeats(classNo, name, mail, selectedSeatsArr) {
     const response = await this._callApi('submitMultipleSeats', [classNo, name, mail, selectedSeatsArr]);
-    return response.data;
+    return this._ensureSuccess(response, 'submitMultipleSeats');
   }
 
   static async submitSelectedSeats(group, day, timeslot, classNo, name, mail, selectedSeatsArr) {
     const response = await this._callApi('submitSelectedSeats', [group, day, timeslot, classNo, name, mail, selectedSeatsArr]);
-    return response.data;
+    return this._ensureSuccess(response, 'submitSelectedSeats');
   }
 
   static async validateLicense() {
     const response = await this._callApi('validateLicense');
-    return response.data;
+    return this._ensureSuccess(response, 'validateLicense');
   }
 }
 
